@@ -1,6 +1,7 @@
 package com.codecly.seckill.dao;
 
 import com.codecly.seckill.entity.Seckill;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
 import java.util.List;
@@ -15,14 +16,14 @@ public interface SeckillDao {
      * @param killTime
      * @return 如果影响行数>1，表示更新的记录行数
      */
-    int reduceNumber(long seckillId, Date killTime);
+    int reduceNumber(@Param("seckillId") long seckillId, @Param("killTime") Date killTime);
 
     /**
      * 根据ID查询秒杀对象
      * @param seckillId
      * @return
      */
-    Seckill queryById(long seckillId);
+    Seckill queryById(@Param("seckillId") long seckillId);
 
     /**
      * 根据偏移量查询秒杀商品列表
@@ -30,5 +31,5 @@ public interface SeckillDao {
      * @param limit
      * @return
      */
-    List<Seckill> queryAll(int offset, int limit);
+    List<Seckill> queryAll(@Param("offset") int offset,@Param("limit") int limit);
 }

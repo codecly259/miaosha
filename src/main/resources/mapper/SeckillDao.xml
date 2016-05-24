@@ -11,7 +11,7 @@
           number = number -1
         where seckill_id = #{seckillId}
         and start_time <![CDATA[ <= ]]> #{killTime}
-        and ent_time >= #{killTime}
+        and end_time >= #{killTime}
         and number >= 0;
     </update>
 
