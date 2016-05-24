@@ -24,9 +24,9 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>war</packaging>
 
-    <name>miaosha</name>
-    <groupId>codecly.com.miaosha</groupId>
-    <artifactId>miaosha</artifactId>
+    <name>seckill</name>
+    <groupId>codecly.com.seckill</groupId>
+    <artifactId>seckill</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <dependencies>

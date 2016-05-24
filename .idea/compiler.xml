@@ -24,10 +24,12 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
         <module name="miaosha" />
+        <module name="seckill" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.8">
       <module name="miaosha" target="1.8" />
+      <module name="seckill" target="1.5" />
     </bytecodeTargetLevel>
   </component>
 </project>
