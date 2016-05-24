@@ -4,12 +4,12 @@
 <mapper namespace="com.codecly.seckill.dao.SuccessKillDao">
     <insert id="insertSuccessKilled">
       <!-- 主键冲突，报错 -->
-      insert ignore into success_killed(seckill_id, user_phone)
-      values (#{seckillId}, #{userPhone})
+      insert ignore into success_killed(seckill_id, user_phone, state)
+      values (#{seckillId}, #{userPhone}, 0)
     </insert>
 
     <!--根据id查询SuccessKilled并携带秒杀产品对象实体-->
-    <select id="queryByIdWithSeckill">
+    <select id="queryByIdWithSeckill" resultType="SuccessKilled">
       <!-- 如何告诉MyBatis把结果映射到SuccessKilled同时映射Seckill属性 -->
       <!-- 可以自由控制SQL -->
       select
@@ -25,7 +25,7 @@
         s.create_time "seckill.create_time"
       from success_killed sk
       inner join seckill s on sk.seckill_id = s.seckill_id
-      where sk.seckill_id = #{seckillId}
+      where sk.seckill_id = #{seckillId} and sk.user_phone = #{userPhone}
 
     </select>
 </mapper>
