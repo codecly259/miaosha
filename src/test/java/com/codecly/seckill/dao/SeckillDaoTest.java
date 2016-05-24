@@ -9,7 +9,7 @@ public class SeckillDaoTest {
 
     @Test
     public void testReduceNumber() throws Exception {
-
+        // test
     }
 
     @Test
