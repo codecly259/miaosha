@@ -45,6 +45,6 @@ public interface SeckillService {
      * @param userPhone
      * @param md5
      */
-    SeckillExecution excuteSeckill(long seckillId, long userPhone, String md5)
+    SeckillExecution executeSeckill(long seckillId, long userPhone, String md5)
         throws SeckillException;
 }

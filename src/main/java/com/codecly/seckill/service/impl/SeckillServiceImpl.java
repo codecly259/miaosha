@@ -65,7 +65,8 @@ public class SeckillServiceImpl implements SeckillService{
     }
 
     @Override
-    public SeckillExecution excuteSeckill(long seckillId, long userPhone, String md5) throws SeckillException {
+    public SeckillExecution executeSeckill(long seckillId, long userPhone, String md5) throws SeckillException {
+
         return null;
     }
 }
