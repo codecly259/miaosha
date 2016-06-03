@@ -1,10 +1,14 @@
 package com.codecly.seckill.service.impl;
 
 import com.codecly.seckill.dao.SeckillDao;
+import com.codecly.seckill.dao.SuccessKillDao;
 import com.codecly.seckill.dto.Exposer;
 import com.codecly.seckill.dto.SeckillExecution;
 import com.codecly.seckill.entity.Seckill;
 import com.codecly.seckill.entity.SuccessKilled;
+import com.codecly.seckill.enums.SeckillStatEnum;
+import com.codecly.seckill.exception.RepeatKillException;
+import com.codecly.seckill.exception.SeckillCloseException;
 import com.codecly.seckill.exception.SeckillException;
 import com.codecly.seckill.service.SeckillService;
 import org.slf4j.Logger;
@@ -20,12 +24,12 @@ import java.util.List;
  * @author maxinchun
  * @create 2016-05-25 22:17
  */
-public class SeckillServiceImpl implements SeckillService{
+public class SeckillServiceImpl implements SeckillService {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private SeckillDao seckillDao;
-    private SuccessKilled successKilled;
+    private SuccessKillDao successKillDao;
 
     // md5盐值字符串，用于混淆 MD5
     public final String salt = "akfakdfjkfaj;2u4891ufakj `0!#&*$jladfj57329";
@@ -43,14 +47,14 @@ public class SeckillServiceImpl implements SeckillService{
     @Override
     public Exposer exportSeckillUrl(long seckillId) {
         Seckill seckill = seckillDao.queryById(seckillId);
-        if(seckill == null){
+        if (seckill == null) {
             return new Exposer(false, seckillId);
         }
         Date startTime = seckill.getStartTime();
         Date endTime = seckill.getEndTime();
         Date nowTime = new Date();
-        if(nowTime.getTime() < startTime.getTime()
-            || nowTime.getTime() > endTime.getTime()){
+        if (nowTime.getTime() < startTime.getTime()
+            || nowTime.getTime() > endTime.getTime()) {
             return new Exposer(false, seckillId, nowTime.getTime(), startTime.getTime(), endTime.getTime());
         }
         // 转化特定字符串的过程，不可逆
@@ -66,7 +70,40 @@ public class SeckillServiceImpl implements SeckillService{
 
     @Override
     public SeckillExecution executeSeckill(long seckillId, long userPhone, String md5) throws SeckillException {
-        System.out.println("TODO://");
-        return null;
+        if (md5 == null || md5.equals(getMd5(seckillId))) {
+            throw new SeckillException("seckill data rewrite");
+        }
+        // 执行秒杀逻辑：减库存 + 记录购买行为
+        Date nowTime = new Date();
+
+        try {
+            // 减库存
+            int updateCount = seckillDao.reduceNumber(seckillId, nowTime);
+            if (updateCount <= 0) {
+                // 没有更新到记录，秒杀结束
+                throw new SeckillCloseException("seckill is closed");
+            } else {
+                // 进入购买行为
+                int insertCount = successKillDao.insertSuccessKilled(seckillId, userPhone);
+                // 唯一：seckillId, userPhone
+                if (insertCount <= 0) {
+                    // 重复秒杀
+                    throw new RepeatKillException("seckill repeated");
+                } else {
+                    // 秒杀成功
+                    SuccessKilled successKilled = successKillDao.queryByIdWithSeckill(seckillId, userPhone);
+                    return new SeckillExecution(seckillId, SeckillStatEnum.SUCCESS, successKilled);
+                }
+            }
+        } catch (SeckillCloseException e1) {
+            throw e1;
+        } catch (RepeatKillException e2) {
+            throw e2;
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            // 所有编译期异常 转化为运行期异常
+            throw new SeckillException("seckill inner error:" + e.getMessage());
+        }
+
     }
 }
