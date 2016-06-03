@@ -13,6 +13,8 @@ import com.codecly.seckill.exception.SeckillException;
 import com.codecly.seckill.service.SeckillService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
 import java.util.Date;
@@ -24,11 +26,16 @@ import java.util.List;
  * @author maxinchun
  * @create 2016-05-25 22:17
  */
+// @Component @Service @Dao @Controller
+@Service
 public class SeckillServiceImpl implements SeckillService {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    // 注入Service依赖
+    @Autowired // @Resource, @Inject
     private SeckillDao seckillDao;
+    @Autowired
     private SuccessKillDao successKillDao;
 
     // md5盐值字符串，用于混淆 MD5
