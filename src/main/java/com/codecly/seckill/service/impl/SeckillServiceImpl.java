@@ -85,7 +85,7 @@ public class SeckillServiceImpl implements SeckillService {
      * 3：不是所有的方法都需要事务，如只有一条修改操作，只读操作不需要事务控制
      */
     public SeckillExecution executeSeckill(long seckillId, long userPhone, String md5) throws SeckillException {
-        if (md5 == null || md5.equals(getMd5(seckillId))) {
+        if (md5 == null || !md5.equals(getMd5(seckillId))) {
             throw new SeckillException("seckill data rewrite");
         }
         // 执行秒杀逻辑：减库存 + 记录购买行为
