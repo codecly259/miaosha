@@ -12,7 +12,7 @@ POST    /seckill/{id}/{md5}/execution   执行秒杀
 
 ## spring mvc 运行流程
 
-![spring mvc 运行流程](images/spring-mvc-folw.png)
+![spring mvc 运行流程](images/spring-mvc-flow.png)
 
 
 ## 注解映射技巧
