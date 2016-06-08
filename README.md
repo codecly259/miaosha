@@ -2,7 +2,8 @@
 
 ## 秒杀API的URL设计
 
-GET     /seckill/list           秒杀列表
-GET     /seckill/{id}/detail    详情页
-GET     /seckill/time/now       系统时间
-POST    /seckill/{id}/exposer   暴露秒杀
+GET     /seckill/list                   秒杀列表
+GET     /seckill/{id}/detail            详情页
+GET     /seckill/time/now               系统时间
+POST    /seckill/{id}/exposer           暴露秒杀
+POST    /seckill/{id}/{md5}/execution   执行秒杀
