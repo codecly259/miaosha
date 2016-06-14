@@ -20,7 +20,7 @@
     <mvc:annotation-driven />
 
     <!-- servlet-mapping 映射路径：/ -->
-    <!-- 2: 静态资源默认servlet配置
+    <!-- 2: 静态资源默认servlet配置想·
         1): 加入对静态资源的处理，js ,gif, png
         2): 允许使用 "/" 作为映射
     -->
@@ -33,7 +33,7 @@
         <property name="suffix" value=".jsp" />
     </bean>
 
-    <!-- 4: 扫描web相关d的 bean -->
+    <!-- 4: 扫描web相关的 bean -->
     <context:component-scan base-package="com.codecly.seckill.web" />
 
 </beans>
