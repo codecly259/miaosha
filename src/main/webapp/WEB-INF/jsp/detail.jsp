@@ -8,13 +8,22 @@
 <body>
 <div class="container">
     <div class="panel panel-default text-center">
-        <div class="panel-heading">${seckill.name}</div>
+        <div class="panel-heading">
+            <h1>${seckill.name}</h1>
+        </div>
+        <div class="panel-body">
+            <h2 class="text-danger">
+                <!-- 显示time图标 -->
+                <span class="glyphicon glyphicon-time"></span>
+                <!-- 展示倒计时 -->
+                <span class="glyphicon" id="seckill-box"></span>
+            </h2>
+        </div>
     </div>
-    <div class="panel-body"></div>
 </div>
 
 <!-- 登录弹出层，输入电话 -->
-<div id="killPhoneModal" class="modal">
+<div id="killPhoneModal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
