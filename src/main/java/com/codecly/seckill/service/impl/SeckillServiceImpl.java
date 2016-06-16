@@ -104,24 +104,26 @@ public class SeckillServiceImpl implements SeckillService {
         Date nowTime = new Date();
 
         try {
-            // 减库存
-            int updateCount = seckillDao.reduceNumber(seckillId, nowTime);
-            if (updateCount <= 0) {
-                // 没有更新到记录，秒杀结束
-                throw new SeckillCloseException("seckill is closed");
+            // 进入购买行为
+            int insertCount = successKillDao.insertSuccessKilled(seckillId, userPhone);
+            // 唯一：seckillId, userPhone
+            if (insertCount <= 0) {
+                // 重复秒杀 rollback
+                throw new RepeatKillException("seckill repeated");
             } else {
-                // 进入购买行为
-                int insertCount = successKillDao.insertSuccessKilled(seckillId, userPhone);
-                // 唯一：seckillId, userPhone
-                if (insertCount <= 0) {
-                    // 重复秒杀
-                    throw new RepeatKillException("seckill repeated");
+                // 减库存，热点商品竞争
+                int updateCount = seckillDao.reduceNumber(seckillId, nowTime);
+                if (updateCount <= 0) {
+                    // 没有更新到记录，秒杀结束， rollback
+                    throw new SeckillCloseException("seckill is closed");
                 } else {
-                    // 秒杀成功
+                    // 秒杀成功 commit
                     SuccessKilled successKilled = successKillDao.queryByIdWithSeckill(seckillId, userPhone);
                     return new SeckillExecution(seckillId, SeckillStatEnum.SUCCESS, successKilled);
                 }
+
             }
+
         } catch (SeckillCloseException e1) {
             throw e1;
         } catch (RepeatKillException e2) {
@@ -132,5 +134,10 @@ public class SeckillServiceImpl implements SeckillService {
             throw new SeckillException("seckill inner error:" + e.getMessage());
         }
 
+    }
+
+    @Override
+    public SeckillExecution executeSeckillProcedure(long seckillId, long userPhone, String md5) throws SeckillException {
+        return null;
     }
 }
