@@ -29,3 +29,7 @@ POST    /seckill/{id}/{md5}/execution   执行秒杀
 - /user/*/creation    匹配 /user/aaa/creation、 /user/bbb/creation等URL
 - /user/**/creation   匹配 /user/creation、 /user/aaa/bbb/creation等URL
 - /user/{userId}      匹配 /user/123、 /user/abc等URL
+
+## 前端交互设计
+
+![前端交互设计](images/font-end-interactive-desgin.png)
