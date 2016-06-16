@@ -2,6 +2,7 @@ package com.codecly.seckill.service.impl;
 
 import com.codecly.seckill.dao.SeckillDao;
 import com.codecly.seckill.dao.SuccessKillDao;
+import com.codecly.seckill.dao.cache.RedisDao;
 import com.codecly.seckill.dto.Exposer;
 import com.codecly.seckill.dto.SeckillExecution;
 import com.codecly.seckill.entity.Seckill;
@@ -38,6 +39,8 @@ public class SeckillServiceImpl implements SeckillService {
     private SeckillDao seckillDao;
     @Autowired
     private SuccessKillDao successKillDao;
+    @Autowired
+    private RedisDao redisDao;
 
     // md5盐值字符串，用于混淆 MD5
     public final String salt = "akfakdfjkfaj;2u4891ufakj `0!#&*$jladfj57329";
@@ -54,18 +57,18 @@ public class SeckillServiceImpl implements SeckillService {
 
     @Override
     public Exposer exportSeckillUrl(long seckillId) {
-        // 优化缓存
-        /**
-         * get from cache
-         * if null
-         *      get db
-         * else
-         *      put cache
-         * logic
-         */
-        Seckill seckill = seckillDao.queryById(seckillId);
+        // 优化点： 缓存优化: 超时的基础上维护一致性
+        // 1. 访问redis
+        Seckill seckill = redisDao.getSeckill(seckillId);
         if (seckill == null) {
-            return new Exposer(false, seckillId);
+            // 2. 访问数据库
+            seckill = seckillDao.queryById(seckillId);
+            if (seckill == null) {
+                return new Exposer(false, seckillId);
+            } else {
+                // 3. 放入redis
+                redisDao.putSeckill(seckill);
+            }
         }
         Date startTime = seckill.getStartTime();
         Date endTime = seckill.getEndTime();
